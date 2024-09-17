@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Countdown Timer by Yemna Mehmood</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #ffafbd, #ffc3a0);
+      color: #fff;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    #timer {
+      font-size: 4rem;
+      letter-spacing: 2px;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .controls {
+      margin-top: 30px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      color: #fff;
+      background-color: #333;
+      border: none;
+      border-radius: 5px;
+      margin: 0 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    .time-inputs {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    input[type="number"] {
+      width: 60px;
+      padding: 10px;
+      font-size: 1.2rem;
+      text-align: center;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #333;
+      background-color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+    }
+
+    footer p {
+      font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      #timer {
+        font-size: 3rem;
+      }
+
+      input[type="number"] {
+        width: 50px;
+        font-size: 1rem;
+      }
+
+      button {
+        font-size: 1rem;
+      }
+
+      footer p {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Countdown Timer</h1>
+  <div id="timer">00:00:00</div>
+
+  <div class="time-inputs">
+    <input type="number" id="hours" placeholder="HH" min="0" max="23">
+    <input type="number" id="minutes" placeholder="MM" min="0" max="59">
+    <input type="number" id="seconds" placeholder="SS" min="0" max="59">
+  </div>
+
+  <div class="controls">
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <button id="reset">Reset</button>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Countdown Timer by Yemna Mehmood. All rights reserved.</p>
+  </footer>
+
+  <script>
+    let countdown;
+    let timeLeft = 0; // Default time in seconds
+
+    const timerDisplay = document.getElementById("timer");
+    const startButton = document.getElementById("start");
+    const stopButton = document.getElementById("stop");
+    const resetButton = document.getElementById("reset");
+
+    const hoursInput = document.getElementById("hours");
+    const minutesInput = document.getElementById("minutes");
+    const secondsInput = document.getElementById("seconds");
+
+    // Function to format time into HH:MM:SS
+    function formatTime(seconds) {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = Math.floor(seconds % 60);
+      return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+    }
+
+    // Function to update the timer display
+    function updateTimer() {
+      timerDisplay.textContent = formatTime(timeLeft);
+    }
+
+    // Function to start the countdown
+    function startTimer() {
+      if (countdown) return; // Prevent multiple intervals
+
+      // Get values from input fields
+      const hours = parseInt(hoursInput.value) || 0;
+      const minutes = parseInt(minutesInput.value) || 0;
+      const seconds = parseInt(secondsInput.value) || 0;
+
+      // Convert input time to seconds
+      timeLeft = hours * 3600 + minutes * 60 + seconds;
+
+      if (timeLeft <= 0) {
+        alert("Please enter a valid time!");
+        return;
+      }
+
+      countdown = setInterval(() => {
+        timeLeft--;
+        updateTimer();
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          countdown = null;
+        }
+      }, 1000);
+    }
+
+    // Function to stop the countdown
+    function stopTimer() {
+      clearInterval(countdown);
+      countdown = null;
+    }
+
+    // Function to reset the countdown
+    function resetTimer() {
+      clearInterval(countdown);
+      countdown = null;
+      timeLeft = 0;
+      updateTimer();
+      hoursInput.value = '';
+      minutesInput.value = '';
+      secondsInput.value = '';
+    }
+
+    // Event listeners
+    startButton.addEventListener("click", startTimer);
+    stopButton.addEventListener("click", stopTimer);
+    resetButton.addEventListener("click", resetTimer);
+
+    // Initialize the timer display
+    updateTimer();
+  </script>
+
+</body>
+</html>
